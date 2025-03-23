@@ -1,0 +1,20 @@
+services:
+  tarantool:
+    image: tarantool/tarantool
+    restart: always
+    volumes:
+      - ./init.lua:/opt/tarantool/init.lua
+    ports:
+      - "3301:3301"
+    command: ["tarantool", "/opt/tarantool/init.lua"]
+
+  kvstore:
+    build: .
+    depends_on:
+      - tarantool
+    ports:
+      - "8080:8080"
+    environment:
+      - TARANTOOL_HOST=tarantool:3301
+      - TARANTOOL_USER=
+      - TARANTOOL_PASS=
